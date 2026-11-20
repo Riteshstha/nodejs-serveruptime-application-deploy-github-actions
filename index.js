@@ -10,7 +10,7 @@ const PORT = process.env.PORT ?? 8080
 app.use(express.static(path.join(__dirname, "public")))
 
 app.get("/api/hello", (req, res) => {
-    res.json({ msg: "Hello from the server!" })
+    res.json({ msg: "Hello from the server motherfucker!" })
 })
 
 app.get("/api/status", (req, res) => {
