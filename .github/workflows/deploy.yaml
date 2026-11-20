@@ -18,7 +18,7 @@ jobs:
         with:
           host: ${{ secrets.SSH_PUB }}
           username: ritesh
-          key:${{ secrets.SSH_KEY }}
+          key: ${{ secrets.SSH_KEY }}
           scripts: |
             cd ~/nodejs-serveruptime-application-deploy-github-actions
             git pull 
