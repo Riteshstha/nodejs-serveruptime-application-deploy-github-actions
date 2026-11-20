@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>API Server</title>
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    min-height: 100vh; display: grid; place-items: center;
+    background: #0b0d17; color: #e8ecff;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    overflow: hidden;
+  }
+  canvas { position: fixed; inset: 0; z-index: 0; }
+  main { position: relative; z-index: 1; width: min(720px, 92vw); }
+  h1 {
+    font-size: clamp(2rem, 6vw, 3.4rem);
+    background: linear-gradient(90deg, #7c5cff, #00e0ff, #7c5cff);
+    background-size: 200%; -webkit-background-clip: text; color: transparent;
+    animation: slide 6s linear infinite;
+  }
+  @keyframes slide { to { background-position: 200%; } }
+  .live { display: flex; align-items: center; gap: 8px; margin: 8px 0 28px; color: #8b93b8; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: #2dff9a;
+         box-shadow: 0 0 12px #2dff9a; animation: pulse 1.4s infinite; }
+  @keyframes pulse { 50% { opacity: .3; } }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; }
+  .card {
+    background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1);
+    border-radius: 16px; padding: 18px; backdrop-filter: blur(10px);
+    transition: transform .2s, border-color .2s;
+  }
+  .card:hover { transform: translateY(-4px); border-color: #7c5cff; }
+  .label { font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: #8b93b8; }
+  .value { font-size: 1.4rem; margin-top: 6px; word-break: break-all; }
+  .row { display: flex; gap: 14px; margin-top: 14px; align-items: stretch; }
+  button {
+    flex: 1; padding: 16px; border: 0; border-radius: 16px; cursor: pointer;
+    font: inherit; font-size: 1rem; color: #fff;
+    background: linear-gradient(135deg, #7c5cff, #00b7ff);
+    transition: transform .15s, box-shadow .15s;
+  }
+  button:hover { transform: scale(1.03); box-shadow: 0 0 24px #7c5cff88; }
+  #spark { flex: 2; height: 56px; width: 100%; background: rgba(255,255,255,.05);
+           border-radius: 16px; border: 1px solid rgba(255,255,255,.1); }
+  #msg { margin-top: 14px; color: #00e0ff; min-height: 1.4em; }
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+<main>
+  <h1>Hello from the server!</h1>
+  <div class="live"><span class="dot"></span><span id="clock">connecting…</span></div>
+
+  <div class="grid">
+    <div class="card"><div class="label">Uptime</div><div class="value" id="uptime">–</div></div>
+    <div class="card"><div class="label">Memory</div><div class="value" id="mem">–</div></div>
+    <div class="card"><div class="label">Node</div><div class="value" id="node">–</div></div>
+    <div class="card"><div class="label">Container</div><div class="value" id="host">–</div></div>
+  </div>
+
+  <div class="row">
+    <button id="ping">Ping API</button>
+    <canvas id="spark" width="400" height="56"></canvas>
+  </div>
+  <div id="msg"></div>
+</main>
+
+<script>
+// ---------- live stats ----------
+const $ = id => document.getElementById(id)
+const fmt = s => `${Math.floor(s/3600)}h ${Math.floor(s%3600/60)}m ${s%60}s`
+
+async function refresh() {
+  try {
+    const d = await (await fetch("/api/status")).json()
+    $("uptime").textContent = fmt(d.uptime)
+    $("mem").textContent = d.memMB + " MB"
+    $("node").textContent = d.node
+    $("host").textContent = d.host
+    $("clock").textContent = "online · " + new Date(d.time).toLocaleTimeString()
+  } catch { $("clock").textContent = "offline" }
+}
+refresh(); setInterval(refresh, 1000)
+
+// ---------- ping button + latency graph ----------
+const times = []
+$("ping").onclick = async () => {
+  const t0 = performance.now()
+  const r = await fetch("/api/hello")
+  const ms = performance.now() - t0
+  $("msg").textContent = `${(await r.json()).msg}  (${ms.toFixed(1)} ms)`
+  times.push(ms); if (times.length > 30) times.shift()
+  const c = $("spark"), x = c.getContext("2d")
+  x.clearRect(0, 0, c.width, c.height)
+  x.strokeStyle = "#00e0ff"; x.lineWidth = 2; x.beginPath()
+  const max = Math.max(...times, 1)
+  times.forEach((v, i) => {
+    const px = (i / 29) * c.width, py = c.height - 6 - (v / max) * (c.height - 12)
+    i ? x.lineTo(px, py) : x.moveTo(px, py)
+  })
+  x.stroke()
+}
+
+// ---------- particle background ----------
+const bg = $("bg"), g = bg.getContext("2d")
+let W, H
+const resize = () => { W = bg.width = innerWidth; H = bg.height = innerHeight }
+resize(); addEventListener("resize", resize)
+const mouse = { x: -999, y: -999 }
+addEventListener("mousemove", e => { mouse.x = e.clientX; mouse.y = e.clientY })
+const pts = Array.from({ length: 80 }, () => ({
+  x: Math.random() * innerWidth, y: Math.random() * innerHeight,
+  vx: (Math.random() - .5) * .5, vy: (Math.random() - .5) * .5
+}))
+;(function loop() {
+  g.clearRect(0, 0, W, H)
+  for (const p of pts) {
+    p.x += p.vx; p.y += p.vy
+    if (p.x < 0 || p.x > W) p.vx *= -1
+    if (p.y < 0 || p.y > H) p.vy *= -1
+    g.fillStyle = "#7c5cff"; g.fillRect(p.x, p.y, 2, 2)
+    for (const q of [...pts, mouse]) {
+      const d = Math.hypot(p.x - q.x, p.y - q.y)
+      if (d < 120) {
+        g.strokeStyle = `rgba(0,224,255,${1 - d / 120})`
+        g.beginPath(); g.moveTo(p.x, p.y); g.lineTo(q.x, q.y); g.stroke()
+      }
+    }
+  }
+  requestAnimationFrame(loop)
+})()
+</script>
+</body>
+</html>
