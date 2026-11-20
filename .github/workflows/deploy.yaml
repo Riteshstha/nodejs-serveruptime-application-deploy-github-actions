@@ -1,10 +1,11 @@
-name: Deploy NodeJS Application to hostinger
+
+name: Deploy NodeJS Application to Hostinger
 
 on:
   push:
     branches:
-      -main
- 
+      - main
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -16,10 +17,10 @@ jobs:
       - name: Deploy Via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.SSH_PUB }}
+          host: ${{ secrets.SSH_HOST }}
           username: ritesh
           key: ${{ secrets.SSH_KEY }}
-          scripts: |
+          script: |
             cd ~/nodejs-serveruptime-application-deploy-github-actions
-            git pull 
+            git pull origin main
             docker compose up -d --build
