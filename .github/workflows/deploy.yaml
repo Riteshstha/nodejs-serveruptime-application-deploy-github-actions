@@ -20,6 +20,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ritesh
           key: ${{ secrets.SSH_KEY }}
+          port: 223
           script: |
             cd ~/nodejs-serveruptime-application-deploy-github-actions
             git pull origin main
