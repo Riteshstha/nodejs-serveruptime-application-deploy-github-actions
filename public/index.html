@@ -7,8 +7,7 @@
 <meta name="description" content="Portfolio of Ritesh: networking student building labs with Proxmox, pfSense, Docker and Nginx.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Ubuntu+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Ubuntu+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #060b08;
@@ -22,14 +21,7 @@
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--mono);
-    font-size: 16px;
-    line-height: 1.7;
-    -webkit-font-smoothing: antialiased;
-  }
+  body { background: var(--bg); color: var(--text); font-family: var(--mono); font-size: 16px; line-height: 1.7; -webkit-font-smoothing: antialiased; }
   #bg { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; }
   a { color: var(--accent); text-decoration: none; }
   a:hover { text-decoration: underline; text-underline-offset: 4px; }
@@ -39,77 +31,86 @@
 
   /* hero: two terminals stacked */
   .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; gap: 28px; padding: 48px 0; }
-  .term { width: 100%; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 0 60px rgba(61, 255, 138, 0.07); overflow: hidden; }
-  .term-bar { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--line); color: var(--muted); font-size: 13px; }
-  .term-body { padding: 26px 26px 30px; min-height: 300px; }
+  .term { width: 100%; overflow: hidden; background: #300a24; border: 1px solid #4a1d3d; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,.6), 0 0 60px rgba(61,255,138,.06); }
+  .term-bar { position: relative; display: flex; align-items: center; justify-content: center; padding: 10px 14px; background: #2c2c2c; border-bottom: 1px solid #1a1a1a; color: #ddd; font-family: "Ubuntu Mono", monospace; font-size: 15px; }
+  .term-bar .title { margin: 0; }
+  .term-bar .wbtns { position: absolute; right: 12px; display: flex; gap: 8px; }
+  .wbtns i { width: 22px; height: 22px; border-radius: 50%; background: #444; color: #ddd; font-style: normal; font-size: 12px; display: grid; place-items: center; }
+  .wbtns i.x { background: #e95420; color: #fff; }
+  .term-body { padding: 26px 26px 30px; min-height: 300px; font-family: "Ubuntu Mono", monospace; font-size: 19px; }
   .line { white-space: pre-wrap; word-break: break-word; }
-  .prompt { color: var(--accent); }
-  .out { color: var(--text); }
+  .prompt { color: #fff; }
+  .prompt .u { color: #8ae234; }
+  .prompt .p { color: #729fcf; }
   .name { font-size: clamp(36px, 7vw, 68px); font-weight: 700; line-height: 1.1; color: #eafff1; margin: 6px 0 4px; }
   .role { color: var(--muted); font-size: clamp(15px, 2.2vw, 19px); }
-  .cursor { display: inline-block; width: 0.6em; height: 1.1em; background: var(--accent); vertical-align: text-bottom; animation: blink 1s steps(1) infinite; }
+  .cursor { display: inline-block; width: 0.6em; height: 1.1em; background: #fff; vertical-align: text-bottom; animation: blink 1s steps(1) infinite; }
   @keyframes blink { 50% { opacity: 0; } }
   .cta { margin-top: 24px; display: flex; gap: 14px; flex-wrap: wrap; }
   .btn { display: inline-block; padding: 10px 18px; border: 1px solid var(--accent); border-radius: 6px; color: var(--accent); font-weight: 500; font-size: 15px; transition: background .2s, color .2s; }
   .btn:hover { background: var(--accent); color: #04110a; text-decoration: none; }
   .btn.ghost { border-color: var(--line); color: var(--text); }
   .btn.ghost:hover { background: var(--accent-dim); color: var(--accent); border-color: var(--accent); }
+  button.btn { background: transparent; font-family: inherit; line-height: inherit; cursor: pointer; }
+
+  /* clickable ls output */
+  .ls { display: flex; flex-wrap: wrap; gap: 6px 26px; margin-top: 6px; }
+  .ls a { color: #729fcf; font-weight: 700; }
+  .ls a:hover { color: #fff; text-decoration: underline; text-underline-offset: 4px; }
 
   section { padding: 84px 0 20px; }
   h2 { font-size: 26px; color: #eafff1; margin-bottom: 26px; font-weight: 700; }
   h2::before { content: "$ "; color: var(--accent); }
-  .about p { max-width: 68ch; margin-bottom: 14px; color: var(--text); }
+  .about p { max-width: 68ch; margin-bottom: 14px; }
 
   /* skills */
   .skills { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 18px; }
   .group { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 18px 20px; }
   .group h3 { font-size: 15px; color: var(--accent); font-weight: 500; margin-bottom: 10px; }
   .chips { display: flex; flex-wrap: wrap; gap: 8px; }
-  .chips li { list-style: none; font-size: 14px; padding: 3px 10px; border: 1px solid var(--line); border-radius: 999px; color: var(--text); }
+  .chips li { list-style: none; font-size: 14px; padding: 3px 10px; border: 1px solid var(--line); border-radius: 999px; }
 
   /* projects */
   .projects { display: grid; gap: 18px; }
-  .project { background: var(--panel); border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 8px; padding: 20px 22px; transition: border-color .2s, background .2s; }
+  .project { scroll-margin-top: 24px; background: var(--panel); border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 8px; padding: 20px 22px; transition: border-color .2s, background .2s; }
   .project:hover { background: rgba(14, 30, 20, 0.9); border-color: var(--accent); }
+  .project:target { border-color: var(--accent); background: rgba(14, 30, 20, 0.95); box-shadow: 0 0 24px rgba(61,255,138,.15); }
   .project h3 { font-size: 18px; color: #eafff1; margin-bottom: 6px; }
-  .project p { color: var(--text); max-width: 72ch; }
+  .project p { max-width: 72ch; }
   .tags { margin-top: 12px; color: var(--muted); font-size: 13px; }
 
   /* contact */
-  .contact p { color: var(--muted); margin-bottom: 18px; max-width: 60ch; }
+  .contact > p { color: var(--muted); margin-bottom: 18px; max-width: 60ch; }
   .links { display: flex; gap: 14px; flex-wrap: wrap; }
+  .ct { margin-top: 22px; }
+  .ct .term-body { min-height: 200px; font-size: 18px; line-height: 1.55; }
+  .ct .row { white-space: pre-wrap; word-break: break-all; color: #eee; }
+  .ct .key { color: #8ae234; }
+  .ct .dim { color: #a99bb0; }
+  .acts { display: flex; gap: 10px; flex-wrap: wrap; margin: 8px 0 12px; }
+  .act { font: inherit; font-size: 15px; line-height: 1.4; background: transparent; color: #8ae234; border: 1px solid #8ae234; border-radius: 4px; padding: 2px 14px; cursor: pointer; }
+  .act:hover { background: #8ae234; color: #300a24; text-decoration: none; }
 
   footer { position: relative; z-index: 1; text-align: center; color: var(--muted); font-size: 13px; padding: 70px 24px 40px; }
 
-  @media (max-width: 600px) {
-    .term-body { padding: 20px; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    html { scroll-behavior: auto; }
-    .cursor { animation: none; }
-  }
+  @media (max-width: 600px) { .term-body { padding: 20px; } }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .cursor { animation: none; } }
 
-  /* Ubuntu terminal look */
-  .term { background: #300a24; border: 1px solid #4a1d3d; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,.6), 0 0 60px rgba(61,255,138,.06); }
-  .term-bar { position: relative; justify-content: center; background: #2c2c2c; border-bottom: 1px solid #1a1a1a; color: #ddd; font-family: "Ubuntu Mono", monospace; font-size: 15px; }
-  .term-bar .title { margin: 0; }
-  .term-bar .wbtns { position: absolute; right: 12px; margin: 0; display: flex; gap: 8px; }
-  .wbtns i { width: 22px; height: 22px; border-radius: 50%; background: #444; color: #ddd; font-style: normal; font-size: 12px; display: grid; place-items: center; }
-  .wbtns i.x { background: #e95420; color: #fff; }
-  .term-body { font-family: "Ubuntu Mono", monospace; font-size: 19px; }
-  .prompt { color: #fff; }
-  .prompt .u { color: #8ae234; }
-  .prompt .p { color: #729fcf; }
-  .cursor { background: #fff; }
-
-  /* interactive shell */
-  .shell .term-body { min-height: 0; height: 320px; overflow-y: auto; padding: 16px 22px; font-size: 17px; line-height: 1.55; cursor: text; color: #eee; }
+  /* interactive shell (Kali look) */
+  .shell.term { background: #1b1c26; border: 1px solid #2d3047; box-shadow: 0 20px 60px rgba(0,0,0,.6), 0 0 60px rgba(79,140,255,.08); }
+  .shell .term-bar { background: #2a2c3b; border-bottom: 1px solid #14151d; color: #d6d8e6; }
+  .shell .wbtns i.x { background: #4f8cff; }
+  .shell .term-body { min-height: 0; height: 320px; overflow-y: auto; padding: 16px 22px; font-size: 17px; line-height: 1.55; cursor: text; color: #e4e6f0; }
   .shell .row { white-space: pre-wrap; word-break: break-word; }
-  .shell .dir { color: #729fcf; font-weight: 700; }
-  .shell .u { color: #8ae234; font-weight: 700; }
-  .shell .p { color: #729fcf; font-weight: 700; }
-  .shell .err { color: #ef6b6b; }
-  .shell .dim { color: #a99bb0; }
+  .shell .k   { color: #4f8cff; }
+  .shell .ku  { color: #4f8cff; font-weight: 700; }
+  .shell .kp  { color: #fff; font-weight: 700; }
+  .shell .u   { color: #4f8cff; font-weight: 700; }
+  .shell .dir { color: #5fd7ff; font-weight: 700; }
+  .shell .err { color: #ff5f6d; }
+  .shell .dim { color: #8b8fa8; }
+  .shell .ok  { color: #5af78e; }
+  #sh-line1 { white-space: pre; }
   .sh-row { display: flex; align-items: baseline; }
   .sh-row .prompt { white-space: pre; }
   #sh-in { flex: 1; min-width: 0; background: transparent; border: 0; outline: 0; color: #fff; font: inherit; caret-color: #fff; }
@@ -121,7 +122,7 @@
 <main class="wrap" id="top">
   <header class="hero">
     <div class="term">
-      <div class="term-bar"><span class="title">ritesh@portfolio: ~</span><span class="wbtns"><i>–</i><i>▢</i><i class="x">✕</i></span></div>
+      <div class="term-bar"><span class="title">ritesh@portfolio: ~</span><span class="wbtns" aria-hidden="true"><i>–</i><i>▢</i><i class="x">✕</i></span></div>
       <div class="term-body" id="term">
         <div class="line"><span class="prompt"><b class="u">ritesh@portfolio</b>:<b class="p">~</b>$ </span><span id="cmd1"></span></div>
         <div id="who" hidden>
@@ -131,6 +132,12 @@
         </div>
         <div class="line" style="margin-top:22px"><span class="prompt"><b class="u">ritesh@portfolio</b>:<b class="p">~</b>$ </span><span id="cmd2"></span><span class="cursor" id="cur"></span></div>
         <div id="ctaBox" hidden>
+          <div class="ls">
+            <a href="#project-1">load-balancer/</a>
+            <a href="#project-2">cloudflare-tunnel/</a>
+            <a href="#project-3">zabbix/</a>
+            <a href="#project-4">cicd/</a>
+          </div>
           <div class="cta">
             <a class="btn" href="#projects">View projects</a>
             <a class="btn ghost" href="#contact">Get in touch</a>
@@ -139,11 +146,12 @@
       </div>
     </div>
 
-    <!-- interactive Linux terminal -->
+    <!-- interactive Kali terminal -->
     <div class="term shell">
-      <div class="term-bar"><span class="title" id="sh-title">ritesh@portfolio: ~</span><span class="wbtns"><i>–</i><i>▢</i><i class="x">✕</i></span></div>
+      <div class="term-bar"><span class="title" id="sh-title">ritesh@kali: ~</span><span class="wbtns" aria-hidden="true"><i>–</i><i>▢</i><i class="x">✕</i></span></div>
       <div class="term-body" id="sh-body">
-        <div id="sh-out"></div>
+        <div id="sh-out" aria-live="polite"></div>
+        <div class="prompt" id="sh-line1"></div>
         <div class="sh-row"><span class="prompt" id="sh-prompt"></span><input id="sh-in" type="text" aria-label="Terminal input" spellcheck="false" autocomplete="off" autocapitalize="off" autocorrect="off"></div>
       </div>
     </div>
@@ -151,7 +159,6 @@
 
   <section id="about" class="about">
     <h2>cat about.txt</h2>
-    <!-- TODO: replace with your own words -->
     <p>I'm a networking student working through hands-on labs: routing, NAT, firewalls and network monitoring. I learn by building the real thing, then breaking it on purpose to see what fails.</p>
     <p>My current lab runs on Proxmox: a pfSense firewall, private app servers, an Nginx load balancer in Docker, and Zabbix watching it all. I'm learning shell scripting and CI/CD to make it repeatable.</p>
     <p>Away from the keyboard, I play electric guitar and build home recording setups.</p>
@@ -159,7 +166,6 @@
 
   <section id="skills">
     <h2>ls skills/</h2>
-    <!-- TODO: add or remove skills to match what you really know -->
     <div class="skills">
       <div class="group"><h3>networking</h3><ul class="chips"><li>Routing</li><li>NAT</li><li>VLANs</li><li>Firewall rules</li><li>Packet Tracer</li></ul></div>
       <div class="group"><h3>systems</h3><ul class="chips"><li>Linux servers</li><li>Proxmox</li><li>VMware Fusion</li><li>Bash (learning)</li></ul></div>
@@ -169,24 +175,23 @@
 
   <section id="projects">
     <h2>ls projects/</h2>
-    <!-- TODO: edit titles, descriptions and tags; add links with <a href="..."> if you have repos -->
     <div class="projects">
-      <article class="project">
+      <article class="project" id="project-1">
         <h3>Load-balanced web hosting lab</h3>
         <p>Two app servers behind an Nginx reverse proxy running in Docker, on private networks behind pfSense. The proxy skips a failed server and keeps the site up.</p>
         <p class="tags">Proxmox, pfSense, Nginx, Docker</p>
       </article>
-      <article class="project">
+      <article class="project" id="project-2">
         <h3>Public access with Cloudflare Tunnel</h3>
         <p>Published the lab to the internet through an outbound tunnel, so no inbound ports are open on the datacenter firewall.</p>
         <p class="tags">Cloudflare, pfSense, Nginx</p>
       </article>
-      <article class="project">
+      <article class="project" id="project-3">
         <h3>Network monitoring with Zabbix</h3>
         <p>A Zabbix server watching the proxy, app VMs and firewall, with alerts when a service goes down.</p>
         <p class="tags">Zabbix, Linux</p>
       </article>
-      <article class="project">
+      <article class="project" id="project-4">
         <h3>CI/CD pipeline</h3>
         <p>Every git push builds a Docker image, tags it with the commit ID and prepares it for a rolling deploy with rollback.</p>
         <p class="tags">GitHub Actions, Docker Hub</p>
@@ -196,12 +201,16 @@
 
   <section id="contact" class="contact">
     <h2>./contact.sh</h2>
-    <p>Want to talk networking, labs or a project? Send me a message.</p>
-    <!-- TODO: replace the # links with your real email, GitHub and LinkedIn -->
+    <p>Want to talk networking, labs or a project? Click an option and the terminal will show it.</p>
     <div class="links">
-      <a class="btn" href="mailto:you@example.com">Email me</a>
-      <a class="btn ghost" href="#" rel="noopener">GitHub</a>
-      <a class="btn ghost" href="#" rel="noopener">LinkedIn</a>
+      <button type="button" class="btn" data-key="email">Email me</button>
+      <button type="button" class="btn ghost" data-key="github">GitHub</button>
+      <button type="button" class="btn ghost" data-key="linkedin">LinkedIn</button>
+    </div>
+
+    <div class="term ct">
+      <div class="term-bar"><span class="title">ritesh@portfolio: ~/contact</span><span class="wbtns" aria-hidden="true"><i>–</i><i>▢</i><i class="x">✕</i></span></div>
+      <div class="term-body" id="ct-body" aria-live="polite"></div>
     </div>
   </section>
 </main>
@@ -212,7 +221,14 @@
   document.getElementById('yr').textContent = new Date().getFullYear();
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* ---- hero terminal typing (one orchestrated moment) ---- */
+  /* ---- CONTACT DETAILS: edit these in ONE place ---- */
+  var CONTACT = {
+    email:    { label: 'email',    cmd: 'cat email.txt',    value: 'stha.ritesh76@gmail.com',                href: 'mailto:stha.ritesh76@gmail.com', openText: 'open mail' },
+    github:   { label: 'github',   cmd: 'cat github.txt',   value: 'https://github.com/Riteshstha',       href: 'https://github.com/Riteshstha', openText: 'open' },
+    linkedin: { label: 'linkedin', cmd: 'cat linkedin.txt', value: 'https://www.linkedin.com/in/ritesh shrestha', href: 'https://www.linkedin.com/in/ritesh shrestha', openText: 'open' }
+  };
+
+  /* ---- hero terminal typing ---- */
   (function () {
     var c1 = document.getElementById('cmd1'), c2 = document.getElementById('cmd2');
     var who = document.getElementById('who'), cta = document.getElementById('ctaBox');
@@ -230,12 +246,94 @@
     });
   })();
 
-  /* ---- interactive Linux terminal (simulation, runs only in the browser) ---- */
+  /* ---- contact terminal: line-by-line output with copy buttons ---- */
+  (function () {
+    var body = document.getElementById('ct-body'), token = 0;
+    var PROMPT = '<span class="prompt"><b class="u">ritesh@portfolio</b>:<b class="p">~/contact</b>$ </span>';
+
+    function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+    function add(html, cls) {
+      var d = document.createElement('div');
+      d.className = 'row' + (cls ? ' ' + cls : '');
+      d.innerHTML = html;
+      body.appendChild(d);
+      body.scrollTop = body.scrollHeight;
+      return d;
+    }
+    function copyText(text, btn) {
+      function ok() { btn.textContent = 'copied!'; setTimeout(function () { btn.textContent = 'copy'; }, 1600); }
+      function fallback() {
+        var ta = document.createElement('textarea');
+        ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select();
+        try { document.execCommand('copy'); ok(); } catch (e) { btn.textContent = 'press Ctrl+C'; }
+        document.body.removeChild(ta);
+      }
+      if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(ok, fallback);
+      else fallback();
+    }
+    function idlePrompt() {
+      add(PROMPT + '<span class="cursor"></span>');
+    }
+
+    function show(key) {
+      var c = CONTACT[key];
+      if (!c) return;
+      var t = ++token;
+      body.innerHTML = '';
+      var line = add(PROMPT + '<span class="typed"></span><span class="cursor"></span>');
+      var typed = line.querySelector('.typed'), i = 0;
+
+      (function tick() {
+        if (t !== token) return;
+        typed.textContent = c.cmd.slice(0, ++i);
+        if (i < c.cmd.length) setTimeout(tick, reduce ? 0 : 55);
+        else setTimeout(next, reduce ? 0 : 300);
+      })();
+
+      function next() {
+        if (t !== token) return;
+        var cur = line.querySelector('.cursor'); if (cur) cur.remove();
+        var lines = [['name', 'Ritesh'], ['role', 'Networking student'], [c.label, c.value]], j = 0;
+        (function step() {
+          if (t !== token) return;
+          if (j < lines.length) {
+            add('<span class="key">' + esc(lines[j][0] + ':').padEnd(10) + '</span>' + esc(lines[j][1]));
+            j++;
+            setTimeout(step, reduce ? 0 : 260);
+          } else actions();
+        })();
+      }
+
+      function actions() {
+        if (t !== token) return;
+        var wrap = add('', '');
+        wrap.className = 'acts';
+        var cp = document.createElement('button');
+        cp.type = 'button'; cp.className = 'act'; cp.textContent = 'copy';
+        cp.addEventListener('click', function () { copyText(c.value, cp); });
+        var op = document.createElement('a');
+        op.className = 'act'; op.textContent = c.openText; op.href = c.href;
+        if (key !== 'email') { op.target = '_blank'; op.rel = 'noopener'; }
+        wrap.appendChild(cp); wrap.appendChild(op);
+        idlePrompt();
+      }
+    }
+
+    Array.prototype.forEach.call(document.querySelectorAll('[data-key]'), function (b) {
+      b.addEventListener('click', function () { show(b.getAttribute('data-key')); });
+    });
+
+    idlePrompt();
+    add('<span class="dim">Pick Email, GitHub or LinkedIn above.</span>');
+  })();
+
+  /* ---- interactive Kali terminal (simulation, runs only in the browser) ---- */
   (function () {
     var out = document.getElementById('sh-out'), input = document.getElementById('sh-in');
-    var promptEl = document.getElementById('sh-prompt'), body = document.getElementById('sh-body');
-    var titleEl = document.getElementById('sh-title');
-    var USER = 'ritesh', HOST = 'portfolio', started = Date.now();
+    var promptEl = document.getElementById('sh-prompt'), line1El = document.getElementById('sh-line1');
+    var body = document.getElementById('sh-body'), titleEl = document.getElementById('sh-title');
+    var USER = 'ritesh', HOST = 'kali', started = Date.now();
 
     function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
     function file(c) { return { type: 'file', content: c }; }
@@ -244,8 +342,7 @@
     /* virtual file system. Edit the text here to change what visitors see. */
     var ROOT = dir({ home: dir({ ritesh: dir({
       'about.txt': file("I'm a networking student working through hands-on labs: routing, NAT,\nfirewalls and network monitoring. I learn by building the real thing,\nthen breaking it on purpose to see what fails."),
-      // TODO: put your real email and links here
-      'contact.txt': file('email:    you@example.com\ngithub:   (add your link)\nlinkedin: (add your link)'),
+      'contact.txt': file('email:    ' + CONTACT.email.value + '\ngithub:   ' + CONTACT.github.value + '\nlinkedin: ' + CONTACT.linkedin.value),
       '.secret': file('You found the hidden file. Thanks for poking around my portfolio. :)'),
       skills: dir({
         'networking.txt': file('Routing, NAT, VLANs, firewall rules, Packet Tracer'),
@@ -289,13 +386,20 @@
       }
       return '/' + p.join('/');
     }
-    function promptHTML() {
-      return '<span class="u">' + USER + '@' + HOST + '</span>:<span class="p">' + esc(pathStr(cwd)) + '</span>$ ';
+
+    /* Kali two-line prompt */
+    function line1() {
+      return '<span class="k">┌──(</span><span class="ku">' + USER + '㉿' + HOST + '</span>' +
+             '<span class="k">)-[</span><span class="kp">' + esc(pathStr(cwd)) + '</span><span class="k">]</span>';
     }
+    var LINE2 = '<span class="k">└─</span><span class="ku">$</span> ';
+    function promptHTML() { return line1() + '\n' + LINE2; }
     function setPrompt() {
-      promptEl.innerHTML = promptHTML();
+      line1El.innerHTML = line1();
+      promptEl.innerHTML = LINE2;
       titleEl.textContent = USER + '@' + HOST + ': ' + pathStr(cwd);
     }
+
     function row(html, cls) {
       var d = document.createElement('div');
       d.className = 'row' + (cls ? ' ' + cls : '');
@@ -314,10 +418,10 @@
         row('  <span class="u">cat</span> &lt;file&gt;     show a file        <span class="u">pwd</span>          print working directory');
         row('  <span class="u">tree</span>           show all files     <span class="u">neofetch</span>     system info');
         row('  <span class="u">echo</span> &lt;text&gt;    print text         <span class="u">mkdir</span> / <span class="u">touch</span> / <span class="u">rm</span>');
-        row('  <span class="u">whoami</span>  <span class="u">hostname</span>  <span class="u">date</span>  <span class="u">uname</span>  <span class="u">uptime</span>  <span class="u">ip</span>  <span class="u">ping</span>');
-        row('  <span class="u">history</span>  <span class="u">clear</span>  <span class="u">exit</span>');
+        row('  <span class="u">whoami</span>  <span class="u">id</span>  <span class="u">hostname</span>  <span class="u">date</span>  <span class="u">uname</span>  <span class="u">uptime</span>');
+        row('  <span class="u">ip</span>  <span class="u">ifconfig</span>  <span class="u">ping</span>  <span class="u">nmap</span>  <span class="u">history</span>  <span class="u">clear</span>  <span class="u">exit</span>');
         row('<span class="dim">Tips: Tab completes names, Up/Down shows earlier commands, Ctrl+L clears.</span>');
-        row('<span class="dim">Try: cat about.txt, cd projects, ls -a</span>');
+        row('<span class="dim">Try: cat about.txt, cat contact.txt, cd projects, ls -a, nmap lab.local</span>');
       },
       ls: function (args) {
         var all = false, long = false, targets = [];
@@ -349,8 +453,8 @@
       },
       cd: function (args) {
         var t = args[0], p = resolve(t), n = node(p);
-        if (!n) return err('bash: cd: ' + t + ': No such file or directory');
-        if (n.type !== 'dir') return err('bash: cd: ' + t + ': Not a directory');
+        if (!n) return err('cd: no such file or directory: ' + t);
+        if (n.type !== 'dir') return err('cd: not a directory: ' + t);
         cwd = p;
       },
       pwd: function () { row(esc('/' + cwd.join('/'))); },
@@ -381,10 +485,13 @@
       },
       clear: function () { out.innerHTML = ''; },
       whoami: function () { row(USER); },
+      id: function () {
+        row('uid=1000(' + USER + ') gid=1000(' + USER + ') groups=1000(' + USER + '),27(sudo),100(users)');
+      },
       hostname: function () { row(HOST); },
       date: function () { row(esc(new Date().toString())); },
       uname: function (args) {
-        row(args.indexOf('-a') >= 0 ? 'Linux ' + HOST + ' 6.8.0-lab #1 SMP x86_64 GNU/Linux' : 'Linux');
+        row(args.indexOf('-a') >= 0 ? 'Linux ' + HOST + ' 6.12-kali-amd64 #1 SMP PREEMPT_DYNAMIC Kali 6.12 x86_64 GNU/Linux' : 'Linux');
       },
       uptime: function () {
         var m = Math.floor((Date.now() - started) / 60000);
@@ -400,6 +507,13 @@
         row('    inet 192.0.2.10/24 brd 192.0.2.255 scope global eth0');
         row('<span class="dim">(example address, not a real one)</span>');
       },
+      ifconfig: function () {
+        row('<span class="u">eth0</span>: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500');
+        row('        inet 192.0.2.10  netmask 255.255.255.0  broadcast 192.0.2.255');
+        row('<span class="u">lo</span>: flags=73&lt;UP,LOOPBACK,RUNNING&gt;  mtu 65536');
+        row('        inet 127.0.0.1  netmask 255.0.0.0');
+        row('<span class="dim">(example addresses, not real)</span>');
+      },
       ping: function (args) {
         var h = args[0];
         if (!h) return err('ping: usage error: Destination address required');
@@ -410,11 +524,24 @@
         row('<br>--- ' + esc(h) + ' ping statistics ---');
         row('4 packets transmitted, 4 received, 0% packet loss');
       },
+      nmap: function (args) {
+        var h = args.filter(function (a) { return a.charAt(0) !== '-'; })[0];
+        if (!h) return row('Nmap 7.95 ( https://nmap.org )\nUsage: nmap [Scan Type(s)] [Options] {target specification}');
+        row('Starting Nmap 7.95 ( https://nmap.org )');
+        row('Nmap scan report for ' + esc(h));
+        row('Host is up (0.0012s latency).');
+        row('PORT    STATE SERVICE');
+        row('22/tcp  <span class="ok">open</span>  ssh');
+        row('80/tcp  <span class="ok">open</span>  http');
+        row('443/tcp <span class="ok">open</span>  https');
+        row('<br>Nmap done: 1 IP address (1 host up) scanned in 0.42 seconds');
+        row('<span class="dim">(simulated output. Nothing was scanned.)</span>');
+      },
       neofetch: function () {
         row('<span class="u">' + USER + '@' + HOST + '</span>');
         row('----------------');
-        [['OS', 'Ubuntu 24.04 LTS x86_64'], ['Host', 'Proxmox VM'], ['Kernel', '6.8.0-lab'],
-         ['Shell', 'bash 5.2'], ['Terminal', 'your browser'], ['Skills', 'networking, Linux, Docker, Nginx'],
+        [['OS', 'Kali GNU/Linux Rolling x86_64'], ['Host', 'Proxmox VM'], ['Kernel', '6.12-kali-amd64'],
+         ['Shell', 'zsh 5.9'], ['Terminal', 'your browser'], ['Skills', 'networking, Linux, Docker, Nginx'],
          ['Lab', 'Proxmox + pfSense + Zabbix']].forEach(function (kv) {
           row('<span class="u">' + kv[0] + '</span>: ' + esc(kv[1]));
         });
@@ -461,7 +588,7 @@
         history.push(line);
         var name = t.shift();
         if (CMD.hasOwnProperty(name)) CMD[name](t);
-        else err('bash: ' + name + ': command not found');
+        else err('zsh: command not found: ' + name);
       }
       hIdx = history.length;
       setPrompt();
@@ -519,8 +646,8 @@
     });
 
     setPrompt();
-    row('Welcome to my interactive terminal. Type <span class="u">help</span> to see what you can run.');
-    row('<span class="dim">Try: cat about.txt, cd projects, ls -a, neofetch</span>');
+    row('Welcome to my interactive Kali terminal. Type <span class="u">help</span> to see what you can run.');
+    row('<span class="dim">Try: cat about.txt, cat contact.txt, cd projects, ls -a, neofetch</span>');
   })();
 
   /* ---- particle network background ---- */
