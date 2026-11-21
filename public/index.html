@@ -37,8 +37,8 @@
 
   .wrap { position: relative; z-index: 1; max-width: 980px; margin: 0 auto; padding: 0 24px; }
 
-  /* hero terminal */
-  .hero { min-height: 100vh; display: flex; align-items: center; padding: 48px 0; }
+  /* hero: two terminals stacked */
+  .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; gap: 28px; padding: 48px 0; }
   .term { width: 100%; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 0 60px rgba(61, 255, 138, 0.07); overflow: hidden; }
   .term-bar { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--line); color: var(--muted); font-size: 13px; }
   .term-body { padding: 26px 26px 30px; min-height: 300px; }
@@ -101,6 +101,18 @@
   .prompt .u { color: #8ae234; }
   .prompt .p { color: #729fcf; }
   .cursor { background: #fff; }
+
+  /* interactive shell */
+  .shell .term-body { min-height: 0; height: 320px; overflow-y: auto; padding: 16px 22px; font-size: 17px; line-height: 1.55; cursor: text; color: #eee; }
+  .shell .row { white-space: pre-wrap; word-break: break-word; }
+  .shell .dir { color: #729fcf; font-weight: 700; }
+  .shell .u { color: #8ae234; font-weight: 700; }
+  .shell .p { color: #729fcf; font-weight: 700; }
+  .shell .err { color: #ef6b6b; }
+  .shell .dim { color: #a99bb0; }
+  .sh-row { display: flex; align-items: baseline; }
+  .sh-row .prompt { white-space: pre; }
+  #sh-in { flex: 1; min-width: 0; background: transparent; border: 0; outline: 0; color: #fff; font: inherit; caret-color: #fff; }
 </style>
 </head>
 <body>
@@ -124,6 +136,15 @@
             <a class="btn ghost" href="#contact">Get in touch</a>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- interactive Linux terminal -->
+    <div class="term shell">
+      <div class="term-bar"><span class="title" id="sh-title">ritesh@portfolio: ~</span><span class="wbtns"><i>–</i><i>▢</i><i class="x">✕</i></span></div>
+      <div class="term-body" id="sh-body">
+        <div id="sh-out"></div>
+        <div class="sh-row"><span class="prompt" id="sh-prompt"></span><input id="sh-in" type="text" aria-label="Terminal input" spellcheck="false" autocomplete="off" autocapitalize="off" autocorrect="off"></div>
       </div>
     </div>
   </header>
@@ -191,7 +212,7 @@
   document.getElementById('yr').textContent = new Date().getFullYear();
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* ---- terminal typing (one orchestrated moment) ---- */
+  /* ---- hero terminal typing (one orchestrated moment) ---- */
   (function () {
     var c1 = document.getElementById('cmd1'), c2 = document.getElementById('cmd2');
     var who = document.getElementById('who'), cta = document.getElementById('ctaBox');
@@ -207,6 +228,299 @@
       who.hidden = false;
       type(c2, 'ls projects/', 80, function () { cta.hidden = false; });
     });
+  })();
+
+  /* ---- interactive Linux terminal (simulation, runs only in the browser) ---- */
+  (function () {
+    var out = document.getElementById('sh-out'), input = document.getElementById('sh-in');
+    var promptEl = document.getElementById('sh-prompt'), body = document.getElementById('sh-body');
+    var titleEl = document.getElementById('sh-title');
+    var USER = 'ritesh', HOST = 'portfolio', started = Date.now();
+
+    function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+    function file(c) { return { type: 'file', content: c }; }
+    function dir(ch) { return { type: 'dir', children: ch }; }
+
+    /* virtual file system. Edit the text here to change what visitors see. */
+    var ROOT = dir({ home: dir({ ritesh: dir({
+      'about.txt': file("I'm a networking student working through hands-on labs: routing, NAT,\nfirewalls and network monitoring. I learn by building the real thing,\nthen breaking it on purpose to see what fails."),
+      // TODO: put your real email and links here
+      'contact.txt': file('email:    you@example.com\ngithub:   (add your link)\nlinkedin: (add your link)'),
+      '.secret': file('You found the hidden file. Thanks for poking around my portfolio. :)'),
+      skills: dir({
+        'networking.txt': file('Routing, NAT, VLANs, firewall rules, Packet Tracer'),
+        'systems.txt': file('Linux servers, Proxmox, VMware Fusion, Bash (learning)'),
+        'deploy.txt': file('Docker, Nginx, Cloudflare Tunnel, Zabbix, CI/CD (learning)')
+      }),
+      projects: dir({
+        'load-balancer.txt': file('Load-balanced web hosting lab\nTwo app servers behind an Nginx reverse proxy in Docker, on private\nnetworks behind pfSense. The proxy skips a failed server.'),
+        'cloudflare-tunnel.txt': file('Public access with Cloudflare Tunnel\nPublished the lab through an outbound tunnel, so no inbound ports\nare open on the datacenter firewall.'),
+        'zabbix.txt': file('Network monitoring with Zabbix\nA Zabbix server watching the proxy, app VMs and firewall, with\nalerts when a service goes down.'),
+        'cicd.txt': file('CI/CD pipeline\nEvery git push builds a Docker image, tags it with the commit ID\nand prepares it for a rolling deploy with rollback.')
+      })
+    }) }) });
+
+    var HOME = ['home', 'ritesh'], cwd = HOME.slice(), history = [], hIdx = 0;
+
+    function resolve(p) {
+      var base;
+      if (!p || p === '~') return HOME.slice();
+      if (p.charAt(0) === '/') base = [];
+      else if (p.charAt(0) === '~') { base = HOME.slice(); p = p.slice(1); }
+      else base = cwd.slice();
+      p.split('/').forEach(function (s) {
+        if (!s || s === '.') return;
+        if (s === '..') base.pop(); else base.push(s);
+      });
+      return base;
+    }
+    function node(path) {
+      var n = ROOT;
+      for (var i = 0; i < path.length; i++) {
+        if (!n || n.type !== 'dir' || !n.children.hasOwnProperty(path[i])) return null;
+        n = n.children[path[i]];
+      }
+      return n;
+    }
+    function pathStr(p) {
+      if (p.length >= 2 && p[0] === HOME[0] && p[1] === HOME[1]) {
+        var rest = p.slice(2);
+        return '~' + (rest.length ? '/' + rest.join('/') : '');
+      }
+      return '/' + p.join('/');
+    }
+    function promptHTML() {
+      return '<span class="u">' + USER + '@' + HOST + '</span>:<span class="p">' + esc(pathStr(cwd)) + '</span>$ ';
+    }
+    function setPrompt() {
+      promptEl.innerHTML = promptHTML();
+      titleEl.textContent = USER + '@' + HOST + ': ' + pathStr(cwd);
+    }
+    function row(html, cls) {
+      var d = document.createElement('div');
+      d.className = 'row' + (cls ? ' ' + cls : '');
+      d.innerHTML = html;
+      out.appendChild(d);
+    }
+    function err(msg) { row(esc(msg), 'err'); }
+    function fmtName(nm, c) { return c.type === 'dir' ? '<span class="dir">' + esc(nm) + '</span>' : esc(nm); }
+    function pad(s, n) { s = String(s); while (s.length < n) s = ' ' + s; return s; }
+
+    /* ---- commands ---- */
+    var CMD = {
+      help: function () {
+        row('Available commands:');
+        row('  <span class="u">ls</span> [-a] [-l]   list files        <span class="u">cd</span> &lt;dir&gt;     change directory');
+        row('  <span class="u">cat</span> &lt;file&gt;     show a file        <span class="u">pwd</span>          print working directory');
+        row('  <span class="u">tree</span>           show all files     <span class="u">neofetch</span>     system info');
+        row('  <span class="u">echo</span> &lt;text&gt;    print text         <span class="u">mkdir</span> / <span class="u">touch</span> / <span class="u">rm</span>');
+        row('  <span class="u">whoami</span>  <span class="u">hostname</span>  <span class="u">date</span>  <span class="u">uname</span>  <span class="u">uptime</span>  <span class="u">ip</span>  <span class="u">ping</span>');
+        row('  <span class="u">history</span>  <span class="u">clear</span>  <span class="u">exit</span>');
+        row('<span class="dim">Tips: Tab completes names, Up/Down shows earlier commands, Ctrl+L clears.</span>');
+        row('<span class="dim">Try: cat about.txt, cd projects, ls -a</span>');
+      },
+      ls: function (args) {
+        var all = false, long = false, targets = [];
+        args.forEach(function (a) {
+          if (a.charAt(0) === '-') { if (a.indexOf('a') > 0) all = true; if (a.indexOf('l') > 0) long = true; }
+          else targets.push(a);
+        });
+        if (!targets.length) targets = ['.'];
+        targets.forEach(function (t) {
+          var n = node(resolve(t));
+          if (!n) { err("ls: cannot access '" + t + "': No such file or directory"); return; }
+          if (targets.length > 1) row(esc(t) + ':');
+          if (n.type === 'file') { row(esc(t)); return; }
+          var names = Object.keys(n.children).sort();
+          if (!all) names = names.filter(function (x) { return x.charAt(0) !== '.'; });
+          if (!names.length) return;
+          if (long) {
+            var d = new Date().toLocaleString('en-US', { month: 'short', day: '2-digit' });
+            row('total ' + names.length);
+            names.forEach(function (nm) {
+              var c = n.children[nm], isDir = c.type === 'dir';
+              row((isDir ? 'drwxr-xr-x' : '-rw-r--r--') + ' 1 ' + USER + ' ' + USER + ' ' +
+                  pad(isDir ? 4096 : c.content.length, 5) + ' ' + d + ' ' + fmtName(nm, c));
+            });
+          } else {
+            row(names.map(function (nm) { return fmtName(nm, n.children[nm]); }).join('  '));
+          }
+        });
+      },
+      cd: function (args) {
+        var t = args[0], p = resolve(t), n = node(p);
+        if (!n) return err('bash: cd: ' + t + ': No such file or directory');
+        if (n.type !== 'dir') return err('bash: cd: ' + t + ': Not a directory');
+        cwd = p;
+      },
+      pwd: function () { row(esc('/' + cwd.join('/'))); },
+      cat: function (args) {
+        if (!args.length) return;
+        args.forEach(function (a) {
+          var n = node(resolve(a));
+          if (!n) err('cat: ' + a + ': No such file or directory');
+          else if (n.type === 'dir') err('cat: ' + a + ': Is a directory');
+          else row(esc(n.content));
+        });
+      },
+      tree: function () {
+        var n = node(cwd), dirs = 0, files = 0;
+        row('<span class="dir">.</span>');
+        (function walk(d, prefix) {
+          var names = Object.keys(d.children).sort().filter(function (x) { return x.charAt(0) !== '.'; });
+          names.forEach(function (nm, i) {
+            var last = i === names.length - 1, c = d.children[nm];
+            row(prefix + (last ? '└── ' : '├── ') + fmtName(nm, c));
+            if (c.type === 'dir') { dirs++; walk(c, prefix + (last ? '    ' : '│   ')); } else files++;
+          });
+        })(n, '');
+        row('<br>' + dirs + ' directories, ' + files + ' files');
+      },
+      echo: function (args) {
+        row(esc(args.join(' ').replace(/\$USER/g, USER).replace(/\$HOME/g, '/home/' + USER)));
+      },
+      clear: function () { out.innerHTML = ''; },
+      whoami: function () { row(USER); },
+      hostname: function () { row(HOST); },
+      date: function () { row(esc(new Date().toString())); },
+      uname: function (args) {
+        row(args.indexOf('-a') >= 0 ? 'Linux ' + HOST + ' 6.8.0-lab #1 SMP x86_64 GNU/Linux' : 'Linux');
+      },
+      uptime: function () {
+        var m = Math.floor((Date.now() - started) / 60000);
+        row('up ' + (m < 1 ? 'less than a minute' : m + ' min') + ',  1 user,  load average: 0.00, 0.01, 0.00');
+      },
+      history: function () {
+        history.forEach(function (h, i) { row(pad(i + 1, 4) + '  ' + esc(h)); });
+      },
+      ip: function () {
+        row('1: <span class="u">lo</span>: &lt;LOOPBACK,UP&gt; mtu 65536');
+        row('    inet 127.0.0.1/8 scope host lo');
+        row('2: <span class="u">eth0</span>: &lt;BROADCAST,MULTICAST,UP&gt; mtu 1500');
+        row('    inet 192.0.2.10/24 brd 192.0.2.255 scope global eth0');
+        row('<span class="dim">(example address, not a real one)</span>');
+      },
+      ping: function (args) {
+        var h = args[0];
+        if (!h) return err('ping: usage error: Destination address required');
+        row('PING ' + esc(h) + ' (203.0.113.7) 56(84) bytes of data.');
+        for (var i = 1; i <= 4; i++) {
+          row('64 bytes from 203.0.113.7: icmp_seq=' + i + ' ttl=57 time=' + (8 + Math.random() * 6).toFixed(1) + ' ms');
+        }
+        row('<br>--- ' + esc(h) + ' ping statistics ---');
+        row('4 packets transmitted, 4 received, 0% packet loss');
+      },
+      neofetch: function () {
+        row('<span class="u">' + USER + '@' + HOST + '</span>');
+        row('----------------');
+        [['OS', 'Ubuntu 24.04 LTS x86_64'], ['Host', 'Proxmox VM'], ['Kernel', '6.8.0-lab'],
+         ['Shell', 'bash 5.2'], ['Terminal', 'your browser'], ['Skills', 'networking, Linux, Docker, Nginx'],
+         ['Lab', 'Proxmox + pfSense + Zabbix']].forEach(function (kv) {
+          row('<span class="u">' + kv[0] + '</span>: ' + esc(kv[1]));
+        });
+      },
+      mkdir: function (args) {
+        args.forEach(function (a) {
+          var p = resolve(a), par = node(p.slice(0, -1)), nm = p[p.length - 1];
+          if (!par || par.type !== 'dir' || !nm) return err("mkdir: cannot create directory '" + a + "': No such file or directory");
+          if (par.children.hasOwnProperty(nm)) return err("mkdir: cannot create directory '" + a + "': File exists");
+          par.children[nm] = dir({});
+        });
+      },
+      touch: function (args) {
+        args.forEach(function (a) {
+          var p = resolve(a), par = node(p.slice(0, -1)), nm = p[p.length - 1];
+          if (!par || par.type !== 'dir' || !nm) return err("touch: cannot touch '" + a + "': No such file or directory");
+          if (!par.children.hasOwnProperty(nm)) par.children[nm] = file('');
+        });
+      },
+      rm: function (args) {
+        var recursive = args.some(function (a) { return /^-[a-z]*r/i.test(a); });
+        args.filter(function (a) { return a.charAt(0) !== '-'; }).forEach(function (a) {
+          var p = resolve(a), n = node(p), nm = p[p.length - 1];
+          if (p.length <= 2) return err("rm: it is dangerous to operate recursively on '" + a + "' (nice try)");
+          if (!n) return err("rm: cannot remove '" + a + "': No such file or directory");
+          if (n.type === 'dir' && !recursive) return err("rm: cannot remove '" + a + "': Is a directory");
+          delete node(p.slice(0, -1)).children[nm];
+        });
+        if (!node(cwd)) cwd = HOME.slice();
+      },
+      sudo: function () { row(USER + ' is not in the sudoers file. This incident will be reported.'); },
+      exit: function () { row('logout'); row("<span class=\"dim\">...just kidding, you can't leave my portfolio that easily.</span>"); }
+    };
+
+    function parse(line) {
+      var re = /"([^"]*)"|'([^']*)'|(\S+)/g, m, t = [];
+      while ((m = re.exec(line))) t.push(m[1] !== undefined ? m[1] : m[2] !== undefined ? m[2] : m[3]);
+      return t;
+    }
+    function run(line) {
+      row(promptHTML() + esc(line));
+      var t = parse(line);
+      if (t.length) {
+        history.push(line);
+        var name = t.shift();
+        if (CMD.hasOwnProperty(name)) CMD[name](t);
+        else err('bash: ' + name + ': command not found');
+      }
+      hIdx = history.length;
+      setPrompt();
+      body.scrollTop = body.scrollHeight;
+    }
+
+    /* ---- Tab completion ---- */
+    function complete() {
+      var v = input.value, m = v.match(/^([\s\S]*?)(\S*)$/), head = m[1], word = m[2], cands, prefix = '';
+      if (!head.trim()) {
+        cands = Object.keys(CMD).filter(function (c) { return c.indexOf(word) === 0; });
+      } else {
+        var slash = word.lastIndexOf('/'), dp = word.slice(0, slash + 1), nm = word.slice(slash + 1);
+        var d = node(resolve(dp || '.'));
+        prefix = dp;
+        cands = (d && d.type === 'dir') ? Object.keys(d.children).filter(function (c) {
+          return c.indexOf(nm) === 0 && (nm || c.charAt(0) !== '.');
+        }).sort() : [];
+        word = nm;
+      }
+      if (!cands.length) return;
+      if (cands.length === 1) {
+        var c = cands[0], d2 = (head.trim() ? node(resolve((prefix + c) || '.')) : null);
+        input.value = head + prefix + c + (d2 && d2.type === 'dir' ? '/' : ' ');
+        return;
+      }
+      var lcp = cands[0];
+      cands.forEach(function (c) { while (c.indexOf(lcp) !== 0) lcp = lcp.slice(0, -1); });
+      if (lcp.length > word.length) { input.value = head + prefix + lcp; return; }
+      row(promptHTML() + esc(v));
+      row(cands.map(esc).join('  '));
+      body.scrollTop = body.scrollHeight;
+    }
+
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { run(input.value); input.value = ''; }
+      else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (hIdx > 0) { hIdx--; input.value = history[hIdx]; }
+      } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (hIdx < history.length - 1) { hIdx++; input.value = history[hIdx]; }
+        else { hIdx = history.length; input.value = ''; }
+      } else if (e.key === 'Tab') { e.preventDefault(); complete(); }
+      else if (e.ctrlKey && e.key === 'l') { e.preventDefault(); out.innerHTML = ''; }
+      else if (e.ctrlKey && e.key === 'c' && input.selectionStart === input.selectionEnd) {
+        e.preventDefault();
+        row(promptHTML() + esc(input.value) + '^C');
+        input.value = '';
+        body.scrollTop = body.scrollHeight;
+      }
+    });
+    body.addEventListener('click', function () {
+      if (!String(window.getSelection())) input.focus({ preventScroll: true });
+    });
+
+    setPrompt();
+    row('Welcome to my interactive terminal. Type <span class="u">help</span> to see what you can run.');
+    row('<span class="dim">Try: cat about.txt, cd projects, ls -a, neofetch</span>');
   })();
 
   /* ---- particle network background ---- */
