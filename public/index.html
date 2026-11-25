@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Ritesh | Networking &amp; Infrastructure</title>
-<meta name="description" content="Portfolio of Ritesh: networking student building labs with Proxmox, pfSense, Docker and Nginx.">
+<meta name="description" content="Portfolio of Ritesh: networking and systems student building labs with Proxmox, pfSense, Docker and Nginx.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Ubuntu+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -26,9 +26,9 @@
   a { color: var(--accent); text-decoration: none; }
   a:hover { text-decoration: underline; text-underline-offset: 4px; }
   :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-
+ 
   .wrap { position: relative; z-index: 1; max-width: 980px; margin: 0 auto; padding: 0 24px; }
-
+ 
   /* hero: two terminals stacked */
   .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; gap: 28px; padding: 48px 0; }
   .term { width: 100%; overflow: hidden; background: #300a24; border: 1px solid #4a1d3d; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,.6), 0 0 60px rgba(61,255,138,.06); }
@@ -52,24 +52,24 @@
   .btn.ghost { border-color: var(--line); color: var(--text); }
   .btn.ghost:hover { background: var(--accent-dim); color: var(--accent); border-color: var(--accent); }
   button.btn { background: transparent; font-family: inherit; line-height: inherit; cursor: pointer; }
-
+ 
   /* clickable ls output */
   .ls { display: flex; flex-wrap: wrap; gap: 6px 26px; margin-top: 6px; }
   .ls a { color: #729fcf; font-weight: 700; }
   .ls a:hover { color: #fff; text-decoration: underline; text-underline-offset: 4px; }
-
+ 
   section { padding: 84px 0 20px; }
   h2 { font-size: 26px; color: #eafff1; margin-bottom: 26px; font-weight: 700; }
   h2::before { content: "$ "; color: var(--accent); }
   .about p { max-width: 68ch; margin-bottom: 14px; }
-
+ 
   /* skills */
   .skills { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 18px; }
   .group { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 18px 20px; }
   .group h3 { font-size: 15px; color: var(--accent); font-weight: 500; margin-bottom: 10px; }
   .chips { display: flex; flex-wrap: wrap; gap: 8px; }
   .chips li { list-style: none; font-size: 14px; padding: 3px 10px; border: 1px solid var(--line); border-radius: 999px; }
-
+ 
   /* projects */
   .projects { display: grid; gap: 18px; }
   .project { scroll-margin-top: 24px; background: var(--panel); border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 8px; padding: 20px 22px; transition: border-color .2s, background .2s; }
@@ -78,7 +78,7 @@
   .project h3 { font-size: 18px; color: #eafff1; margin-bottom: 6px; }
   .project p { max-width: 72ch; }
   .tags { margin-top: 12px; color: var(--muted); font-size: 13px; }
-
+ 
   /* contact */
   .contact > p { color: var(--muted); margin-bottom: 18px; max-width: 60ch; }
   .links { display: flex; gap: 14px; flex-wrap: wrap; }
@@ -90,12 +90,12 @@
   .acts { display: flex; gap: 10px; flex-wrap: wrap; margin: 8px 0 12px; }
   .act { font: inherit; font-size: 15px; line-height: 1.4; background: transparent; color: #8ae234; border: 1px solid #8ae234; border-radius: 4px; padding: 2px 14px; cursor: pointer; }
   .act:hover { background: #8ae234; color: #300a24; text-decoration: none; }
-
+ 
   footer { position: relative; z-index: 1; text-align: center; color: var(--muted); font-size: 13px; padding: 70px 24px 40px; }
-
+ 
   @media (max-width: 600px) { .term-body { padding: 20px; } }
   @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .cursor { animation: none; } }
-
+ 
   /* interactive shell (Kali look) */
   .shell.term { background: #1b1c26; border: 1px solid #2d3047; box-shadow: 0 20px 60px rgba(0,0,0,.6), 0 0 60px rgba(79,140,255,.08); }
   .shell .term-bar { background: #2a2c3b; border-bottom: 1px solid #14151d; color: #d6d8e6; }
@@ -118,7 +118,7 @@
 </head>
 <body>
 <canvas id="bg" aria-hidden="true"></canvas>
-
+ 
 <main class="wrap" id="top">
   <header class="hero">
     <div class="term">
@@ -126,17 +126,16 @@
       <div class="term-body" id="term">
         <div class="line"><span class="prompt"><b class="u">ritesh@portfolio</b>:<b class="p">~</b>$ </span><span id="cmd1"></span></div>
         <div id="who" hidden>
-          <h1 class="name">Ritesh</h1>
-          <!-- TODO: change this title to what you want to be known as -->
-          <p class="role">Networking student. I build and break labs on Proxmox, pfSense and Docker.</p>
+          <h1 class="name">Ritesh Shrestha</h1>
+          <p class="role">Networking/System student. I build and test infrastructure labs with vsphere, Proxmox, pfSense, Docker and Zabbix.</p>
         </div>
         <div class="line" style="margin-top:22px"><span class="prompt"><b class="u">ritesh@portfolio</b>:<b class="p">~</b>$ </span><span id="cmd2"></span><span class="cursor" id="cur"></span></div>
         <div id="ctaBox" hidden>
           <div class="ls">
             <a href="#project-1">load-balancer/</a>
-            <a href="#project-2">cloudflare-tunnel/</a>
-            <a href="#project-3">zabbix/</a>
-            <a href="#project-4">cicd/</a>
+            <a href="#project-2">packet-tracer/</a>
+            <a href="#project-3">networking/</a>
+            <a href="#project-4">Workflow_automation/</a>
           </div>
           <div class="cta">
             <a class="btn" href="#projects">View projects</a>
@@ -145,7 +144,7 @@
         </div>
       </div>
     </div>
-
+ 
     <!-- interactive Kali terminal -->
     <div class="term shell">
       <div class="term-bar"><span class="title" id="sh-title">ritesh@kali: ~</span><span class="wbtns" aria-hidden="true"><i>–</i><i>▢</i><i class="x">✕</i></span></div>
@@ -156,23 +155,23 @@
       </div>
     </div>
   </header>
-
+ 
   <section id="about" class="about">
     <h2>cat about.txt</h2>
-    <p>I'm a networking student working through hands-on labs: routing, NAT, firewalls and network monitoring. I learn by building the real thing, then breaking it on purpose to see what fails.</p>
-    <p>My current lab runs on Proxmox: a pfSense firewall, private app servers, an Nginx load balancer in Docker, and Zabbix watching it all. I'm learning shell scripting and CI/CD to make it repeatable.</p>
-    <p>Away from the keyboard, I play electric guitar and build home recording setups.</p>
+    <p>I'm a networking and systems student focused on hands-on infrastructure labs, including routing, NAT, firewalls, and network monitoring. I learn by building real environments, then deliberately breaking them to understand how and why they fail.</p>
+    <p>My current lab runs on Proxmox and includes a pfSense firewall, segmented private application servers, an Nginx load balancer in Docker, and a monitoring stack built on Zabbix, Grafana, and Checkmk with email alerting. I'm now learning shell scripting and CI/CD to make these environments repeatable and automated.</p>
+    <p>Outside of tech, I play guitars and build home recording setups.</p>
   </section>
-
+ 
   <section id="skills">
     <h2>ls skills/</h2>
     <div class="skills">
-      <div class="group"><h3>networking</h3><ul class="chips"><li>Routing</li><li>NAT</li><li>VLANs</li><li>Firewall rules</li><li>Packet Tracer</li></ul></div>
+      <div class="group"><h3>networking</h3><ul class="chips"><li>Routing</li><li>OSPF</li><li>NAT</li><li>VLANs</li><li>DHCP</li><li>ACLs</li><li>Firewall rules</li><li>Packet Tracer</li></ul></div>
       <div class="group"><h3>systems</h3><ul class="chips"><li>Linux servers</li><li>Proxmox</li><li>VMware Fusion</li><li>Bash (learning)</li></ul></div>
-      <div class="group"><h3>deploy &amp; monitor</h3><ul class="chips"><li>Docker</li><li>Nginx</li><li>Cloudflare Tunnel</li><li>Zabbix</li><li>CI/CD (learning)</li></ul></div>
+      <div class="group"><h3>deploy &amp; monitor</h3><ul class="chips"><li>Docker</li><li>Nginx</li><li>Zabbix</li><li>Grafana</li><li>Checkmk</li><li>Email alerting</li><li>CI/CD (learning)</li></ul></div>
     </div>
   </section>
-
+ 
   <section id="projects">
     <h2>ls projects/</h2>
     <div class="projects">
@@ -182,23 +181,23 @@
         <p class="tags">Proxmox, pfSense, Nginx, Docker</p>
       </article>
       <article class="project" id="project-2">
-        <h3>Public access with Cloudflare Tunnel</h3>
-        <p>Published the lab to the internet through an outbound tunnel, so no inbound ports are open on the datacenter firewall.</p>
-        <p class="tags">Cloudflare, pfSense, Nginx</p>
+        <h3>Enterprise Network Scenarios in Cisco Packet Tracer</h3>
+        <p>Designed and simulated multiple real-world networking scenarios in Packet Tracer, covering the configurations used in day-to-day network administration, from VLAN segmentation and inter-VLAN routing to DHCP, NAT, ACLs, and dynamic routing.</p>
+        <p class="tags">Cisco Packet Tracer, VLANs, Inter-VLAN Routing, DHCP, NAT, ACLs, OSPF</p>
       </article>
       <article class="project" id="project-3">
-        <h3>Network monitoring with Zabbix</h3>
-        <p>A Zabbix server watching the proxy, app VMs and firewall, with alerts when a service goes down.</p>
-        <p class="tags">Zabbix, Linux</p>
+        <h3>Network Monitoring with Zabbix, Grafana &amp; Checkmk</h3>
+        <p>Deployed Zabbix servers across multiple VMs to monitor the proxy, application servers, and firewall. Built a mail service and integrated it with monitoring, so whenever a service goes down an alert email lands in my inbox. Also set up Grafana for visual dashboards and Checkmk as an additional monitoring platform.</p>
+        <p class="tags">Zabbix, Grafana, Checkmk, Linux, Email Alerting, SMTP</p>
       </article>
       <article class="project" id="project-4">
-        <h3>CI/CD pipeline</h3>
-        <p>Every git push builds a Docker image, tags it with the commit ID and prepares it for a rolling deploy with rollback.</p>
-        <p class="tags">GitHub Actions, Docker Hub</p>
-      </article>
+    <h3>Automation Scripts &amp; CI/CD Pipeline</h3>
+    <p>Built a CI/CD pipeline where every git push builds a Docker image, tags it with the commit ID and prepares it for a rolling deploy with rollback. Also wrote a visitor-tracking script that logs each visitor to this website, capturing their public IP address, approximate coordinates, ISP and other network details.</p>
+    <p class="tags">CI/CD Pipeline, GitHub Actions, Docker Hub, Bash, Visitor Logging</p>
+</article>
     </div>
   </section>
-
+ 
   <section id="contact" class="contact">
     <h2>./contact.sh</h2>
     <p>Want to talk networking, labs or a project? Click an option and the terminal will show it.</p>
@@ -207,27 +206,30 @@
       <button type="button" class="btn ghost" data-key="github">GitHub</button>
       <button type="button" class="btn ghost" data-key="linkedin">LinkedIn</button>
     </div>
-
+ 
     <div class="term ct">
       <div class="term-bar"><span class="title">ritesh@portfolio: ~/contact</span><span class="wbtns" aria-hidden="true"><i>–</i><i>▢</i><i class="x">✕</i></span></div>
       <div class="term-body" id="ct-body" aria-live="polite"></div>
     </div>
   </section>
 </main>
-
+ 
 <footer>&copy; <span id="yr"></span> Ritesh. Served from my own Proxmox lab.</footer>
-
+ 
 <script>
   document.getElementById('yr').textContent = new Date().getFullYear();
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
+ 
   /* ---- CONTACT DETAILS: edit these in ONE place ---- */
+  /* ROLE is shown in the contact terminal. LinkedIn URLs cannot contain spaces:
+     copy your exact profile link from LinkedIn and paste it in both places below. */
+  var ROLE = 'Networking/System student';
   var CONTACT = {
     email:    { label: 'email',    cmd: 'cat email.txt',    value: 'stha.ritesh76@gmail.com',                href: 'mailto:stha.ritesh76@gmail.com', openText: 'open mail' },
     github:   { label: 'github',   cmd: 'cat github.txt',   value: 'https://github.com/Riteshstha',       href: 'https://github.com/Riteshstha', openText: 'open' },
-    linkedin: { label: 'linkedin', cmd: 'cat linkedin.txt', value: 'https://www.linkedin.com/in/ritesh shrestha', href: 'https://www.linkedin.com/in/ritesh shrestha', openText: 'open' }
+    linkedin: { label: 'linkedin', cmd: 'cat linkedin.txt', value: 'https://www.linkedin.com/in/ritesh-shrestha', href: 'https://www.linkedin.com/in/ritesh-shrestha', openText: 'open' }
   };
-
+ 
   /* ---- hero terminal typing ---- */
   (function () {
     var c1 = document.getElementById('cmd1'), c2 = document.getElementById('cmd2');
@@ -245,12 +247,12 @@
       type(c2, 'ls projects/', 80, function () { cta.hidden = false; });
     });
   })();
-
+ 
   /* ---- contact terminal: line-by-line output with copy buttons ---- */
   (function () {
     var body = document.getElementById('ct-body'), token = 0;
     var PROMPT = '<span class="prompt"><b class="u">ritesh@portfolio</b>:<b class="p">~/contact</b>$ </span>';
-
+ 
     function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
     function add(html, cls) {
       var d = document.createElement('div');
@@ -275,7 +277,7 @@
     function idlePrompt() {
       add(PROMPT + '<span class="cursor"></span>');
     }
-
+ 
     function show(key) {
       var c = CONTACT[key];
       if (!c) return;
@@ -283,18 +285,18 @@
       body.innerHTML = '';
       var line = add(PROMPT + '<span class="typed"></span><span class="cursor"></span>');
       var typed = line.querySelector('.typed'), i = 0;
-
+ 
       (function tick() {
         if (t !== token) return;
         typed.textContent = c.cmd.slice(0, ++i);
         if (i < c.cmd.length) setTimeout(tick, reduce ? 0 : 55);
         else setTimeout(next, reduce ? 0 : 300);
       })();
-
+ 
       function next() {
         if (t !== token) return;
         var cur = line.querySelector('.cursor'); if (cur) cur.remove();
-        var lines = [['name', 'Ritesh'], ['role', 'Networking student'], [c.label, c.value]], j = 0;
+        var lines = [['name', 'Ritesh'], ['role', ROLE], [c.label, c.value]], j = 0;
         (function step() {
           if (t !== token) return;
           if (j < lines.length) {
@@ -304,7 +306,7 @@
           } else actions();
         })();
       }
-
+ 
       function actions() {
         if (t !== token) return;
         var wrap = add('', '');
@@ -319,46 +321,46 @@
         idlePrompt();
       }
     }
-
+ 
     Array.prototype.forEach.call(document.querySelectorAll('[data-key]'), function (b) {
       b.addEventListener('click', function () { show(b.getAttribute('data-key')); });
     });
-
+ 
     idlePrompt();
     add('<span class="dim">Pick Email, GitHub or LinkedIn above.</span>');
   })();
-
+ 
   /* ---- interactive Kali terminal (simulation, runs only in the browser) ---- */
   (function () {
     var out = document.getElementById('sh-out'), input = document.getElementById('sh-in');
     var promptEl = document.getElementById('sh-prompt'), line1El = document.getElementById('sh-line1');
     var body = document.getElementById('sh-body'), titleEl = document.getElementById('sh-title');
     var USER = 'ritesh', HOST = 'kali', started = Date.now();
-
+ 
     function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
     function file(c) { return { type: 'file', content: c }; }
     function dir(ch) { return { type: 'dir', children: ch }; }
-
+ 
     /* virtual file system. Edit the text here to change what visitors see. */
     var ROOT = dir({ home: dir({ ritesh: dir({
-      'about.txt': file("I'm a networking student working through hands-on labs: routing, NAT,\nfirewalls and network monitoring. I learn by building the real thing,\nthen breaking it on purpose to see what fails."),
+      'about.txt': file("Networking and systems student focused on hands-on infrastructure labs:\nrouting, NAT, firewalls and network monitoring. I learn by building\nreal environments, then deliberately breaking them to understand\nhow and why they fail.\n\nMy Proxmox lab runs a pfSense firewall, segmented private app servers,\nan Nginx load balancer in Docker, and a Zabbix, Grafana and Checkmk\nmonitoring stack with email alerting. Currently learning shell\nscripting and CI/CD to make it all repeatable.\n\nOutside of tech: electric guitar and home recording."),
       'contact.txt': file('email:    ' + CONTACT.email.value + '\ngithub:   ' + CONTACT.github.value + '\nlinkedin: ' + CONTACT.linkedin.value),
       '.secret': file('You found the hidden file. Thanks for poking around my portfolio. :)'),
       skills: dir({
-        'networking.txt': file('Routing, NAT, VLANs, firewall rules, Packet Tracer'),
+        'networking.txt': file('Routing, OSPF, NAT, VLANs, DHCP, ACLs, firewall rules, Packet Tracer'),
         'systems.txt': file('Linux servers, Proxmox, VMware Fusion, Bash (learning)'),
-        'deploy.txt': file('Docker, Nginx, Cloudflare Tunnel, Zabbix, CI/CD (learning)')
+        'deploy.txt': file('Docker, Nginx, Zabbix, Grafana, Checkmk, email alerting, CI/CD (learning)')
       }),
       projects: dir({
         'load-balancer.txt': file('Load-balanced web hosting lab\nTwo app servers behind an Nginx reverse proxy in Docker, on private\nnetworks behind pfSense. The proxy skips a failed server.'),
-        'cloudflare-tunnel.txt': file('Public access with Cloudflare Tunnel\nPublished the lab through an outbound tunnel, so no inbound ports\nare open on the datacenter firewall.'),
-        'zabbix.txt': file('Network monitoring with Zabbix\nA Zabbix server watching the proxy, app VMs and firewall, with\nalerts when a service goes down.'),
+        'packet-tracer.txt': file('Enterprise Network Scenarios in Cisco Packet Tracer\nDesigned and simulated real-world networking scenarios covering\nday-to-day network administration: VLANs, inter-VLAN routing,\nDHCP, NAT, ACLs and OSPF.'),
+        'zabbix.txt': file('Network Monitoring with Zabbix, Grafana & Checkmk\nDeployed Zabbix across multiple VMs to monitor the proxy, app\nservers and firewall. Built a mail service so an alert email\narrives whenever a service goes down. Also set up Grafana\ndashboards and Checkmk.'),
         'cicd.txt': file('CI/CD pipeline\nEvery git push builds a Docker image, tags it with the commit ID\nand prepares it for a rolling deploy with rollback.')
       })
     }) }) });
-
+ 
     var HOME = ['home', 'ritesh'], cwd = HOME.slice(), history = [], hIdx = 0;
-
+ 
     function resolve(p) {
       var base;
       if (!p || p === '~') return HOME.slice();
@@ -386,7 +388,7 @@
       }
       return '/' + p.join('/');
     }
-
+ 
     /* Kali two-line prompt */
     function line1() {
       return '<span class="k">┌──(</span><span class="ku">' + USER + '㉿' + HOST + '</span>' +
@@ -399,7 +401,7 @@
       promptEl.innerHTML = LINE2;
       titleEl.textContent = USER + '@' + HOST + ': ' + pathStr(cwd);
     }
-
+ 
     function row(html, cls) {
       var d = document.createElement('div');
       d.className = 'row' + (cls ? ' ' + cls : '');
@@ -409,7 +411,7 @@
     function err(msg) { row(esc(msg), 'err'); }
     function fmtName(nm, c) { return c.type === 'dir' ? '<span class="dir">' + esc(nm) + '</span>' : esc(nm); }
     function pad(s, n) { s = String(s); while (s.length < n) s = ' ' + s; return s; }
-
+ 
     /* ---- commands ---- */
     var CMD = {
       help: function () {
@@ -575,7 +577,7 @@
       sudo: function () { row(USER + ' is not in the sudoers file. This incident will be reported.'); },
       exit: function () { row('logout'); row("<span class=\"dim\">...just kidding, you can't leave my portfolio that easily.</span>"); }
     };
-
+ 
     function parse(line) {
       var re = /"([^"]*)"|'([^']*)'|(\S+)/g, m, t = [];
       while ((m = re.exec(line))) t.push(m[1] !== undefined ? m[1] : m[2] !== undefined ? m[2] : m[3]);
@@ -594,7 +596,7 @@
       setPrompt();
       body.scrollTop = body.scrollHeight;
     }
-
+ 
     /* ---- Tab completion ---- */
     function complete() {
       var v = input.value, m = v.match(/^([\s\S]*?)(\S*)$/), head = m[1], word = m[2], cands, prefix = '';
@@ -622,7 +624,7 @@
       row(cands.map(esc).join('  '));
       body.scrollTop = body.scrollHeight;
     }
-
+ 
     input.addEventListener('keydown', function (e) {
       if (e.key === 'Enter') { run(input.value); input.value = ''; }
       else if (e.key === 'ArrowUp') {
@@ -644,18 +646,18 @@
     body.addEventListener('click', function () {
       if (!String(window.getSelection())) input.focus({ preventScroll: true });
     });
-
+ 
     setPrompt();
     row('Welcome to my interactive Kali terminal. Type <span class="u">help</span> to see what you can run.');
     row('<span class="dim">Try: cat about.txt, cat contact.txt, cd projects, ls -a, neofetch</span>');
   })();
-
+ 
   /* ---- particle network background ---- */
   (function () {
     var canvas = document.getElementById('bg'), ctx = canvas.getContext('2d');
     var w, h, dpr, pts = [], mouse = { x: -9999, y: -9999 };
     var LINK = 130, MOUSE_LINK = 170;
-
+ 
     function size() {
       dpr = Math.min(window.devicePixelRatio || 1, 2);
       w = window.innerWidth; h = window.innerHeight;
@@ -669,7 +671,7 @@
                    r: Math.random() * 1.4 + 0.8 });
       }
     }
-
+ 
     function frame() {
       ctx.clearRect(0, 0, w, h);
       for (var i = 0; i < pts.length; i++) {
@@ -699,7 +701,7 @@
       }
       if (!reduce) requestAnimationFrame(frame);
     }
-
+ 
     window.addEventListener('mousemove', function (e) { mouse.x = e.clientX; mouse.y = e.clientY; });
     window.addEventListener('mouseleave', function () { mouse.x = mouse.y = -9999; });
     window.addEventListener('resize', function () { size(); if (reduce) frame(); });
@@ -708,3 +710,4 @@
 </script>
 </body>
 </html>
+ 
